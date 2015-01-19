@@ -1,0 +1,3 @@
+# <triggerId>,<active>,<name>,<description>,<match>,<notifierId1>|<notifierId2>|<notifierId3>|...
+trigger-1,true,metric01-low,,ALL,SNMP-Trap-1
+trigger-2,true,metric01-02-high,,ALL,SNMP-Trap-1|SNMP-Trap-2|admin@email.com

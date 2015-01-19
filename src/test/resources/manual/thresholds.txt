@@ -1,0 +1,4 @@
+# <triggerId>,<metricId>,<conditionSetSize>,<conditionSetIndex>,<operator>,<threshold>
+trigger-1,Metric-01,1,1,LT,5.0
+trigger-2,Metric-01,2,1,GTE,15.0
+trigger-2,Metric-02,2,2,GTE,15.0

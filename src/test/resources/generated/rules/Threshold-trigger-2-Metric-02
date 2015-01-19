@@ -1,0 +1,19 @@
+package org.poc.rules
+
+import org.hawkular.alerts.api.common.trigger.Trigger
+import org.hawkular.alerts.api.common.condition.ConditionMatch
+import org.hawkular.alerts.api.common.condition.ThresholdCondition
+import org.hawkular.alerts.api.common.condition.Alert
+import org.hawkular.alerts.api.common.event.Metric
+import java.util.List
+
+global List alerts
+
+rule "Threshold-trigger-2-Metric-02"
+when
+   $t  : Trigger( active == true, id == "trigger-2")
+   $m  : Metric( id == "Metric-02", $value : value  >= 15.0 )
+then
+   ConditionMatch cm = new ConditionMatch( "trigger-2",2,2, "trigger-2: " + $value + " GTE 15.0" );
+   insertLogical(cm);
+end

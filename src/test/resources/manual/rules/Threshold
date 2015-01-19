@@ -1,0 +1,24 @@
+package org.poc.rules
+
+import org.hawkular.alerts.api.common.trigger.Trigger
+import org.hawkular.alerts.api.common.condition.ConditionMatch
+import org.hawkular.alerts.api.common.condition.ThresholdCondition
+import org.hawkular.alerts.api.common.condition.Alert
+import org.hawkular.alerts.api.common.event.Metric
+import java.util.List
+
+global List alerts
+
+import function org.hawkular.alerts.api.common.condition.ThresholdCondition.match;
+
+rule "Threshold"
+when
+    $t  : Trigger( active == true, $tid : id )
+    $tc : ThresholdCondition( triggerId == $tid, $mid : metricId, $th : threshold, $op : operator )
+    $m  : Metric( $mid == id, $value : value )
+    eval( match( $op, $th, $value ) )
+then
+    String log = $tc.getLog( $value );
+    ConditionMatch cm = new ConditionMatch( $tc, log );
+    insertLogical(cm);
+end

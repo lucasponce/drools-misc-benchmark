@@ -1,0 +1,28 @@
+package org.poc.rules
+
+import org.hawkular.alerts.api.common.trigger.Trigger
+import org.hawkular.alerts.api.common.condition.ConditionMatch
+import org.hawkular.alerts.api.common.condition.ThresholdCondition
+import org.hawkular.alerts.api.common.condition.Alert
+import org.hawkular.alerts.api.common.event.Metric
+import java.util.List
+
+global List alerts
+
+rule "Alert-trigger-2-2Condition"
+when
+   $t  : Trigger( active == true, id == "trigger-2" )
+   $cm1 : ConditionMatch( triggerId == "trigger-2", conditionSetSize == 2, conditionSetIndex == 1)
+   $cm2 : ConditionMatch( triggerId == "trigger-2", conditionSetSize == 2, conditionSetIndex == 2)
+then
+   $t.setActive( false );
+   Alert alert = new Alert( "trigger-2" );
+   alert.addConditionMatch( $cm1 );
+   alert.addConditionMatch( $cm2 );
+   for (String notifierId : $t.getNotifiers()) {
+        System.out.println("NOTIFY: " + notifierId + " " + $cm1.getLog() + " AND " + $cm2.getLog() );
+   }
+   alerts.add( alert );
+   insert( alert );
+   update( $t );
+end

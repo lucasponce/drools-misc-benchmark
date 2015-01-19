@@ -1,0 +1,28 @@
+package org.poc.rules
+
+import org.hawkular.alerts.api.common.trigger.Trigger
+import org.hawkular.alerts.api.common.condition.ConditionMatch
+import org.hawkular.alerts.api.common.condition.ThresholdCondition
+import org.hawkular.alerts.api.common.condition.Alert
+import org.hawkular.alerts.api.common.event.Metric
+import java.util.List
+
+global List alerts
+
+import function org.hawkular.alerts.api.common.condition.ThresholdCondition.match;
+
+rule "AlertOneCondition"
+when
+    $t  : Trigger( active == true, $tid : id )
+    $cm : ConditionMatch( triggerId == $tid, conditionSetSize == 1, conditionSetIndex == 1)
+then
+    $t.setActive( false );
+    Alert alert = new Alert( $tid );
+    alert.addConditionMatch( $cm );
+    for (String notifierId : $t.getNotifiers()) {
+        System.out.println("NOTIFY: " + notifierId + " " + $cm.getLog());
+    }
+    alerts.add( alert );
+    insert( alert );
+    update( $t );
+end
